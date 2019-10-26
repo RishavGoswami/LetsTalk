@@ -8,6 +8,7 @@
   height: 100%;
   padding: 20px;
   width: 30%;
+  overflow-y: scroll;
 }
 
 .wrapper {

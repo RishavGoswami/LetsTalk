@@ -2,6 +2,7 @@
 const express = require("express");
 const socketio = require("socket.io");
 const http = require("http");
+const cors = require("cors");
 
 const {
   addUser,
@@ -60,7 +61,7 @@ io.on("connection", socket => {
   socket.on("sendMessage", (message, callback) => {
     // the user who has sent the message
     const user = getUser(socket.id);
-    
+
     io.to(user.chatRoom).emit("adminMessage", {
       user: user.name,
       text: message
@@ -86,5 +87,6 @@ io.on("connection", socket => {
 
 // apply it to the middleware
 app.use(router);
+app.use(cors());
 
 server.listen(PORT, () => console.log(`Server has started on ${PORT}`));

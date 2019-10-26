@@ -19,7 +19,7 @@ const Chat = ({ location }) => {
   const [users, setUsers] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const END_POINT = "localhost:5000";
+  const END_POINT = "https://letstalkshallwe.herokuapp.com/";
 
   useEffect(() => {
     const { name, chatRoom } = queryString.parse(location.search);
