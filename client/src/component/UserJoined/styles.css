@@ -19,11 +19,16 @@ body {
   text-align: center;
   height: 100vh;
   align-items: center;
-  background-color: #1a1a1d;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradientBG 10s ease infinite;
 }
 
 .userJoinedInnerContainer {
   width: 20%;
+  padding: 35px;
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
 }
 
 .userJoinedInput {
@@ -41,10 +46,10 @@ body {
 }
 
 .button {
-  color: #fff !important;
+  color: #fff;
   text-transform: uppercase;
   text-decoration: none;
-  background: #4db6ac;
+  background: #4dc6ac;
   padding: 20px;
   border-radius: 5px;
   display: inline-block;
@@ -54,6 +59,12 @@ body {
 
 .mt-20 {
   margin-top: 20px;
+}
+
+.alignCenter {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 @media (min-width: 320px) and (max-width: 480px) {
@@ -67,4 +78,16 @@ body {
 
 button:focus {
   outline: 0;
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }

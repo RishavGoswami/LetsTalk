@@ -3,6 +3,14 @@ const express = require("express");
 const socketio = require("socket.io");
 const http = require("http");
 
+const {
+  addUser,
+  removeUser,
+  getUser,
+  getUserInRoom,
+  capitalization
+} = require("./users");
+
 // define the port
 const PORT = process.env.PORT || 5000;
 
@@ -20,13 +28,59 @@ io.on("connection", socket => {
   console.log("We have a new joining!");
 
   socket.on("onJoin", ({ name, chatRoom }, callback) => {
+    const { error, user } = addUser({ id: socket.id, name, chatRoom });
 
-    const error = true;
-    if (error) callback({ error: "Something went down hill!!!" });
+    if (error) return callback(error);
+
+    // default message send by the admin
+    socket.emit("adminMessage", {
+      user: "Admin",
+      text: `Hey ${capitalization(user.name)}, welcome to the room!`
+    });
+
+    // send the message to specific chatRoom using the <to> method of broadcast
+    socket.broadcast.to(user.chatRoom).emit("adminMessage", {
+      user: "Admin",
+      text: `${capitalization(user.name)}, has joined`
+    });
+
+    // join a user in a chatRoom
+    socket.join(user.chatRoom);
+
+    // all active users in a room
+    io.to(user.chatRoom).emit("roomData", {
+      room: user.chatRoom,
+      users: getUserInRoom(user.chatRoom)
+    });
+
+    callback();
+  });
+
+  // user generated messages
+  socket.on("sendMessage", (message, callback) => {
+    // the user who has sent the message
+    const user = getUser(socket.id);
+    
+    io.to(user.chatRoom).emit("adminMessage", {
+      user: user.name,
+      text: message
+    });
+    // send details of all active users
+    io.to(user.chatRoom).emit("roomData", {
+      room: user.chatRoom,
+      users: getUserInRoom(user.chatRoom)
+    });
+
+    callback();
   });
 
   socket.on("disconnect", () => {
-    console.log("Someone has just left!");
+    const user = removeUser(socket.id);
+    if (user)
+      return io.to(user.chatRoom).emit("adminMessage", {
+        user: "Admin",
+        text: `${user.name} have left the room.`
+      });
   });
 });
 
